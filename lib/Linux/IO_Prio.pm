@@ -8,7 +8,7 @@ use vars qw(@ISA @EXPORT_OK %EXPORT_TAGS $VERSION);
 use POSIX qw(ENOSYS);
 use Carp;
 
-$VERSION     = '0.01';
+$VERSION     = '0.02';
 @ISA         = qw(Exporter);
 %EXPORT_TAGS = (ionice => [qw(&ionice &ionice_class &ionice_data)],
 	        c_api => [qw(&ioprio_set &ioprio_get)],
@@ -35,7 +35,7 @@ use constant {
 };
 
 if ($^O eq 'linux') {
-    eval{require('syscall.ph')};
+    _load_syscall();
 }
 else {
     warn "Linux::IO_Prio: unsupported operating system -- $^O\n";
@@ -43,6 +43,11 @@ else {
 
 foreach (*SYS_ioprio_set, *SYS_ioprio_get) {
     $_ = \&_not_implemented unless  defined &{$_};
+}
+
+# Load syscall.ph
+sub _load_syscall {
+    return eval{require('syscall.ph') || require('sys/syscall.ph')};
 }
 
 # C API functions
@@ -164,7 +169,7 @@ for further details.
 
 =item $priority = ioprio_get($which, $who)
 
-=item $staus = ioprio_set($which, $who, $class, $data)
+=item $staus = ioprio_set($which, $who, $priority)
 
 =back
 

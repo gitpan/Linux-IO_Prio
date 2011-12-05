@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Linux-IO_Prio
-version:            0.01
+version:            0.02
 abstract:           Interface to Linux ioprio_set and ioprio_get via syscall or ionice wrapper.
 author:
     - Mark Hindley <mark@hindley.org.uk>
